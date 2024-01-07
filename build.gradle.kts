@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.8.22"
+    java
 }
 
 group = "com.ahmadaghazadeh"
@@ -10,13 +10,9 @@ repositories {
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
 }
 
 tasks.test {
     useJUnitPlatform()
 }
 
-kotlin {
-    jvmToolchain(17)
-}
