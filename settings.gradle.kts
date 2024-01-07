@@ -11,9 +11,9 @@ plugins {
 
 rootProject.name = "Microservices"
 
-//include ("Users")
-//include ("apigateway")
-//include ("account")
+include ("users")
+include ("gateway")
+include ("account")
 include ("discovery")
 //include ("ApiConfigServer")
 

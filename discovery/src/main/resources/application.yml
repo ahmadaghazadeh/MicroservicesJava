@@ -1,0 +1,25 @@
+server:
+    port: 8010
+
+spring:
+    application:
+        name: discoveryservice
+
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: http://localhost:8080/eureka
+        registerWithEureka: false
+        fetchRegistry: false
+    instance:
+        preferIpAddress: true
+    renewalPercentThreshold: 0.85
+    server:
+        maxThreadsForPeerReplication: 0
+
+
+
+
+
+
+
