@@ -9,17 +9,17 @@ spring:
             discovery:
                 locator:
                     enabled: true
-#                    lower-case-service-id: true
-#            routes:
-#                - id: users-path
-#                  uri: lb://users-ws
-#                  predicates:
-#                  - Path=/users-ws/users/isOnline
-#                  - Method=GET
+                    lower-case-service-id: true
+            routes:
+                - id: users-path
+                  uri: lb://users-ws
+                  predicates:
+                  - Path=/users-ws/users/status
+                  - Method=GET
 #                  - Header=Authorization, Bearer (.*)
-#                  filters:
-#                  - RemoveRequestHeader=Cookie
-#                  - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
+                  filters:
+                  - RemoveRequestHeader=Cookie
+                  - RewritePath=/users-ws/(?<segment>.*), /$\{segment}
 #                  - AuthorizationHeaderFilter
 #
 #                - id: users-ws
