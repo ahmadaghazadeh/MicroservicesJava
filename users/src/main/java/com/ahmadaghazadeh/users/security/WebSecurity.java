@@ -14,10 +14,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import static org.springframework.security.web.server.authorization.IpAddressReactiveAuthorizationManager.hasIpAddress;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 
 @Configuration
 @EnableWebSecurity
@@ -44,8 +43,10 @@ public class WebSecurity {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(a->{
-            a.requestMatchers(antMatcher("/users/**"));
-            a.requestMatchers("/**").permitAll();
+            a.requestMatchers(antMatcher("/users/**")).permitAll();
+            a.requestMatchers(antMatcher("/**")).permitAll();
+            a.anyRequest().authenticated();
+            //a.requestMatchers("/**").permitAll();
             //hasIpAddress(environment.getProperty("gateway.ip"));
         });
  //       http.authorizeRequests()
@@ -54,8 +55,8 @@ public class WebSecurity {
 //                .requestMatchers(new AntPathRequestMatcher("/api-docs/**")).permitAll()
 //                .requestMatchers(new AntPathRequestMatcher("/**")).permitAll() // hasIpAddress(environment.getProperty("gateway.ip"))
  //              .anyRequest().authenticated();
-     //   http.addFilterBefore(getAuthenticationFilter(http), UsernamePasswordAuthenticationFilter.class);
-      //  http.authenticationProvider(authenticationProvider());
+        http.addFilterBefore(getAuthenticationFilter(http), UsernamePasswordAuthenticationFilter.class);
+        http.authenticationProvider(authenticationProvider());
         http.headers(h->{
             h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable);
         });

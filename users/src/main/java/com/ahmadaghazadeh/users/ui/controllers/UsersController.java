@@ -25,6 +25,12 @@ public class UsersController {
     @Autowired
     UserService userService;
 
+    @GetMapping("/status/check")
+    public  ResponseEntity<String> check() {
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body("Welcome, You are online and application port is "+environment.getProperty("local.server.port"));
+    }
+
     @GetMapping("/status/{name}")
     public  ResponseEntity<String> getOnline(@PathVariable("name")String name ) {
         return ResponseEntity.status(HttpStatus.ACCEPTED)
