@@ -4,6 +4,8 @@ import com.ahmadaghazadeh.users.services.UserService;
 import com.ahmadaghazadeh.users.shared.UserDto;
 import com.ahmadaghazadeh.users.ui.models.LoginRequestModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +29,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final UserService userService;
     private final Environment environment;
-    private final AuthenticationManager authenticationManager;
 
     public AuthenticationFilter(UserService userService,
                                 Environment environment,
@@ -35,14 +36,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         this.userService = userService;
         this.environment = environment;
-        this.authenticationManager = authenticationManager;
+        super.setAuthenticationManager(authenticationManager);
     }
     
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) {
         try {
             LoginRequestModel loginRequestModel = new ObjectMapper().readValue(req.getInputStream(), LoginRequestModel.class);
-            return authenticationManager.authenticate(
+            return getAuthenticationManager().authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequestModel.getEmail(),
                             loginRequestModel.getPassword(),
@@ -62,11 +63,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         byte[] secretKeyBytes = Base64.getEncoder().encode(tokenSecret.getBytes());
         SecretKey signingKey = new SecretKeySpec(secretKeyBytes, SignatureAlgorithm.HS512.getJcaName());
         String token = Jwts.builder()
-                .setSubject(userDetails.getUserId())
+                .setSubject(userDetails.getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(environment.getProperty("token.expiration_time"))))
                 .signWith(signingKey)
                 .compact();
         res.addHeader("token", token);
-        res.addHeader("userId", userDetails.getUserId());
+        res.addHeader("userId", userDetails.getUsername());
     }
 }

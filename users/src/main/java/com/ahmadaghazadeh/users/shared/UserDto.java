@@ -9,6 +9,8 @@ public class UserDto implements Serializable {
     private String password;
     private String email;
     private String userId;
+
+    private String userName;
     private String encryptedPassword;
 
     public String getFirstName() {
@@ -57,5 +59,13 @@ public class UserDto implements Serializable {
 
     public void setEncryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

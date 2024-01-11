@@ -18,6 +18,10 @@ public class CreateUserRequestModel {
     @Email
     private String email;
 
+    @NotNull(message = "First name cannot be null")
+    @Size(min = 2,message = "First name must not be less than two characters")
+    private String userName;
+
     public String getFirstName() {
         return firstName;
     }
@@ -48,5 +52,13 @@ public class CreateUserRequestModel {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

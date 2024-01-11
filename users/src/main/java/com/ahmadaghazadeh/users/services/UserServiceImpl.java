@@ -6,11 +6,13 @@ import com.ahmadaghazadeh.users.shared.UserDto;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
@@ -36,9 +38,19 @@ public class UserServiceImpl implements UserService{
         return mapper.map(userEntity,UserDto.class);
     }
 
+
     @Override
-    public UserDto findByUserName(String email) {
-        UserEntity userEntity=userRepository.findByEmail(email);
+    public UserDto getUserByEmail(String userId) {
+        UserEntity userEntity=userRepository.findByEmail(userId);
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        return mapper.map(userEntity, UserDto.class);
+    }
+
+
+    @Override
+    public UserDto findByUserName(String username)  {
+        UserEntity userEntity=userRepository.findByUserName(username);
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return mapper.map(userEntity, UserDto.class);
@@ -48,8 +60,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity=userRepository.findByUserName(username);
+        if(userEntity==null)
+            throw new UsernameNotFoundException(username);
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        return mapper.map(userEntity, UserDetails.class);
+        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), true, true, true, true,new ArrayList<>());
     }
 }
